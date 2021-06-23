@@ -34,11 +34,13 @@ import java.net.Proxy;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.ZoneOffset;
+import java.time.temporal.TemporalAdjusters;
 import java.time.temporal.TemporalField;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 // JavaFX图形化界面的控制类
 public class Controller {
@@ -54,6 +56,8 @@ public class Controller {
 
     @FXML
     public TabPane tab;
+    @FXML
+    public ToggleButton scan;
     @FXML
     private Label tool_name;
     @FXML
@@ -89,16 +93,13 @@ public class Controller {
     @FXML
     private TableColumn<VulInfo, String> isVul;
 
-    private final ObservableList<VulInfo> datas = FXCollections.observableArrayList();
+    public static final ObservableList<VulInfo> datas = FXCollections.observableArrayList();
     @FXML
     private TextField target;
 
 
-    private ExploitInterface ei;
-
     @FXML
     private MenuItem proxySetupBtn;
-
 
 
     @FXML
@@ -223,7 +224,7 @@ public class Controller {
 
             saveBtn.setOnAction((e) -> {
                 if (disableRadio.isSelected()) {
-                    this.settingInfo.put("proxy", (Object) null);
+                    this.settingInfo.put("proxy", null);
                     this.proxyStatusLabel.setText("");
                     inputDialog.getDialogPane().getScene().getWindow().hide();
                 } else {
@@ -238,7 +239,7 @@ public class Controller {
                             }
                         });
                     } else {
-                        Authenticator.setDefault((Authenticator) null);
+                        Authenticator.setDefault(null);
                     }
 
                     this.settingInfo.put("username", userNameText.getText());
@@ -386,6 +387,12 @@ public class Controller {
 
     // 界面显示  一些默认的基本信息，漏洞列表、编码选项、线程、shell、页脚
     public void defaultInformation() {
+
+        LocalDate today = LocalDate.now();
+        LocalDate firstDayOfThisMonth = today.with(TemporalAdjusters.firstDayOfMonth());
+        this.startTime.setValue(firstDayOfThisMonth);
+        this.endTime.setValue(today);
+
         this.tpVer.setValue(Constants.VER[0]);
         for (String ver : Constants.VER) {
             this.tpVer.getItems().add(ver);
@@ -442,147 +449,84 @@ public class Controller {
 
     }
 
-
-    // 点击检测，获取url 和 要检测的漏洞
-    @FXML
-    public void get_url() {
-        String url = this.target.getText().trim();
-        String cve = this.tpVer.getValue().toString().trim();
-
-        if (Tools.checkTheURL(url)) {
-            //this.ei = Tools.getExploit(cve);
-
-            try {
-
-                if (this.ei.checkVUL(url)) {
-                    this.basic_info.setText(url + " 存在 " + cve + "漏洞 \r\n");
-                } else {
-                    this.basic_info.setText(url + " 不存在 " + cve + "漏洞 \r\n");
-                }
-            } catch (Exception e) {
-                this.basic_info.setText("检测异常 \r\n" + e.toString());
-            }
-
-        } else {
-            Tools.alert("URL检查", "URL格式不符合要求，示例：http://127.0.0.1:7001/");
-        }
-
-    }
-
     @FXML
     public void startScan() {
         String url = this.target.getText().trim();
         LocalDate d1 = this.startTime.getValue();
         LocalDate d2 = this.endTime.getValue();
-        tab.getSelectionModel().select(1);
-
-        if (!Tools.checkTheURL(url)) {
-            Tools.alert("URL检查", "URL格式不符合要求，示例：http://127.0.0.1:7001/");
-            return;
-        }
-
-        if (d1==null||d2==null||"".equals(d1.toString())||"".equals(d2.toString())){
-            Platform.runLater(() -> {
-                //用Platform.runLater来运行需要高频调用的方法
-                Tools.alert("日期检查","日期范围不选，你扫什么？");
-            });
-            return;
-        }
-        long s = d1.atStartOfDay().toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        long s1 = d2.atStartOfDay().toInstant(ZoneOffset.of("+8")).toEpochMilli();
-        System.out.println(s);
-        System.out.println(s1);
-
-        if (s>=s1){
-            Platform.runLater(() -> {
-                //用Platform.runLater来运行需要高频调用的方法
-                Tools.alert("日期检查","瞎选日期,也想扫？");
-            });
-            return;
-        }
-
-
-
-        System.out.println(1);
         long startTime = System.currentTimeMillis(); //程序开始记录时间
+        ExecutorService pool = null;
 
 
-        this.initTableView();
-
-        List<String> urls= this.getUrls(this.genLogDict());
-        // 获取用户选择的线程池数量， 创建对应容量的线程池。
-        int n = new Integer(this.thread.getValue().toString());
-
-        ExecutorService pool = Executors.newFixedThreadPool(n);
-
-        try {
-            int i = 0;
-            // 读取每行的目标
-            for(String u: urls) {
-                i++;
-                //Job t = new Job(target, cve);
-                UrlJob t = new UrlJob(u,Constants.METHOD_GET);
-                // 线程池
-                Future f = pool.submit(t);
-/*                String res = f.get().toString();
-                if (res != null){
-                    this.datas.add(new VulInfo(String.valueOf(i), url, "存在"));
-                }*/
-
-    /*            Platform.runLater(() -> {
-                    //用Platform.runLater来运行需要高频调用的方法
-                    Tools.alert("日期检查","瞎选日期,也想扫？");
-                });*/
-
+        if (this.scan.isSelected()) {
+            if (!Tools.checkTheURL(url)) {
+                Tools.alert("URL检查", "URL格式不符合要求，示例：http://127.0.0.1:7001/");
+                this.scan.setSelected(false);
+                return;
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        long endTime = System.currentTimeMillis(); //程序结束记录时间
-        long totalTime = endTime - startTime;       //总消耗时间 ,毫秒
-        this.time.setText((String.format("用时 %s s", (double) totalTime / 1000)));
+            this.scan.setText("停   止");
 
-    }
+            //tab.getSelectionModel().select(1);
 
+            if (d1 == null || d2 == null || "".equals(d1.toString()) || "".equals(d2.toString())) {
+                Platform.runLater(() -> {
+                    //用Platform.runLater来运行需要高频调用的方法
+                    Tools.alert("日期检查", "日期范围不选，你扫什么？");
+                });
+                this.scan.setSelected(false);
+                return;
+            }
+            long s = d1.atStartOfDay().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            long s1 = d2.atStartOfDay().toInstant(ZoneOffset.of("+8")).toEpochMilli();
+            if (s >= s1) {
+                Platform.runLater(() -> {
+                    //用Platform.runLater来运行需要高频调用的方法
+                    Tools.alert("日期检查", "瞎选日期,也想扫？");
+                    this.scan.setSelected(false);
+                });
+                return;
+            }
 
+            this.initTableView();
 
+            //通过字典合成url
+            List<String> urls = this.getUrls(this.genLogDict());
+            // 获取用户选择的线程池数量， 创建对应容量的线程池。
+            pool = Executors.newFixedThreadPool(Integer.parseInt(this.thread.getValue().toString()));
 
-/*    // 点击上传文件，获取上传的文件信息
-
-    public void get_shell_file() {
-
-        String shell_info = this.upload_info.getText();
-        String upload_path = this.upload_path.getText();
-        String platform = this.platform.getValue().toString().trim();
-
-
-        if(upload_path.length() == 0) {
-            upload_path = "test.jspx";
-        }
-
-        if(shell_info.length() > 0) {
-
-            if(this.ei.isVul()) {
-                try {
-                    String web_shell_path = this.ei.uploadFile(shell_info, upload_path, platform);
-
-                    this.upload_msg.setText("文件上传成功！地址：" + web_shell_path);
-                } catch (Exception var4) {
-                    this.upload_msg.setText(var4.toString());
+            try {
+                // 读取每行的目标
+                for (int i = 0; i < urls.size(); i++) {
+                    pool.submit(new UrlJob(urls.get(i), Constants.METHOD_GET,keys.getText()));
+/*                    String res = f.get().toString();
+                    if (res != null){
+                        this.datas.add(new VulInfo(String.valueOf(i), url, "存在"));
+                    }*/
                 }
 
-            } else {
-                this.upload_msg.setText("文件上传失败！");
-                System.out.println( this.ei.isVul());
-
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
         } else {
-            Tools.alert("文件上传", "上传的文件不能为空");
+            this.scan.setText("开   始");
+            if (pool != null) {
+                pool.shutdown();
+                try {
+                    pool.awaitTermination(5, TimeUnit.MICROSECONDS);
+                    pool.shutdownNow();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            long endTime = System.currentTimeMillis(); //程序结束记录时间
+            long totalTime = endTime - startTime;       //总消耗时间 ,毫秒
+            this.time.setText((String.format("用时 %s s", (double) totalTime / 1000)));
         }
 
 
-    }*/
+    }
+
 
     // 双击时复制url
     private void copyString(String str) {
@@ -606,7 +550,7 @@ public class Controller {
         this.id.setCellValueFactory(new PropertyValueFactory("id"));
         this.id.setSortable(false);
 
-        this.url.setCellValueFactory(new PropertyValueFactory("url"));
+        this.url.setCellValueFactory(new PropertyValueFactory("target"));
         this.url.setSortable(false);
 
         this.isVul.setCellValueFactory(new PropertyValueFactory("isVul"));
@@ -636,24 +580,22 @@ public class Controller {
 
     /**
      * 获取对应版本生成的urls
+     *
      * @return
      */
     public List<String> getUrls(List<String> dict) {
         String tg = this.target.getText().trim();
-        if (!tg.endsWith("/")){
-            tg = tg+"/";
-        }
         List<String> urls = new ArrayList<>();
         if (Constants.VER[0].equals(tpVer.getValue().toString())) {
-            for (int j =0;j<Constants.TP5PATH.length;j++){
-                for (String dir :dict){
-                    urls.add(tg+Constants.TP5PATH[j]+dir);
+            for (int j = 0; j < Constants.TP5PATH.length; j++) {
+                for (String dir : dict) {
+                    urls.add(tg + Constants.TP5PATH[j] + dir);
                 }
             }
-        }else {
-            for (int j =0;j<Constants.TP3PATH.length;j++){
-                for (String dir :dict){
-                    urls.add(tg+Constants.TP3PATH[j]+dir);
+        } else {
+            for (int j = 0; j < Constants.TP3PATH.length; j++) {
+                for (String dir : dict) {
+                    urls.add(tg + Constants.TP3PATH[j] + dir);
                 }
             }
         }
@@ -661,17 +603,16 @@ public class Controller {
     }
 
 
-
-        /**
-         * 生成日志字典
-         * <p>
-         * tp3
-         * 19_01_01.log
-         * 1550651608-19_02_20.log
-         * tp5
-         * /runtime/log/201808/07.log
-         * /runtime/log/201808/07_cli.log
-         */
+    /**
+     * 生成日志字典
+     * <p>
+     * tp3
+     * 19_01_01.log
+     * 1550651608-19_02_20.log
+     * tp5
+     * /runtime/log/201808/07.log
+     * /runtime/log/201808/07_cli.log
+     */
     public List<String> genLogDict() {
         List<String> dict = new ArrayList<>();
 
@@ -701,7 +642,7 @@ public class Controller {
                     }
                     //生成的年月日大于结束日期年月日直接跳出
                     System.out.println(i + "" + j + k);
-                    if (Integer.parseInt(i + "" + j + k) > Integer.parseInt(eds[0] + eds[1]+eds[2])) {
+                    if (Integer.parseInt(i + "" + j + k) > Integer.parseInt(eds[0] + eds[1] + eds[2])) {
                         break;
                     }
                     if (Constants.VER[0].equals(tpVer.getValue().toString())) {
@@ -711,7 +652,7 @@ public class Controller {
                     } else {
                         //tp3
                         String ii = String.valueOf(i);
-                        dict.add(ii.substring(ii.length()-2) +"_"+ jj + "_" + kk + ".log");
+                        dict.add(ii.substring(ii.length() - 2) + "_" + jj + "_" + kk + ".log");
                     }
 
                 }
@@ -846,8 +787,6 @@ public class Controller {
         }
 
         this.fofa_result_info.setText(result);
-
-
 
 
     }
