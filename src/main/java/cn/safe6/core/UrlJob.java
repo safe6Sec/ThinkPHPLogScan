@@ -15,19 +15,22 @@ public class UrlJob implements Callable<String> {
     private String method;
     private String postData;
 
-    public UrlJob(String url,String method, String header) {
+    public UrlJob(String url,String method, String header,String postData) {
         this.url = url;
         this.header = header;
         this.method = method;
+        this.postData =postData;
     }
 
-    public UrlJob(String url,String postData) {
+    public UrlJob(String url,String method,String postData) {
         this.url = url;
         this.postData = postData;
+        this.method=method;
     }
 
-    public UrlJob(String url) {
+    public UrlJob(String url,String method) {
         this.url = url;
+        this.method=method;
     }
 
     public String getPostData() {
@@ -75,8 +78,8 @@ public class UrlJob implements Callable<String> {
                 res = HttpTool.postHttpReuest(url, postData, "UTF-8", "application/x-www-form-urlencoded");
             }
 
-            System.out.println("result ");
-            System.out.println(res);
+            //System.out.println("result ");
+            //System.out.println(res);
 
            // boolean flag = result.contains(uuid);
 

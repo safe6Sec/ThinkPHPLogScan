@@ -8,15 +8,16 @@ package cn.safe6.tools;
 
 // http 请求对象，取自 shack2 的Java反序列化漏洞利用工具V1.7
 
-import cn.safe6.core.CVE_2021_22986;
-import cn.safe6.core.CVE_2020_14882;
+
 import cn.safe6.core.ExploitInterface;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TextArea;
 import javafx.stage.Window;
 
+import java.awt.*;
 import java.io.*;
 
+import java.net.URI;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.logging.Level;
@@ -154,20 +155,17 @@ public class Tools {
     }
 
 
-    // 根据cve选择对应的漏洞检测
-    public static ExploitInterface getExploit(String select) {
-        ExploitInterface ei = null;
 
-        if (select.startsWith("CVE-2020-14882")) {
-            ei = new CVE_2020_14882();
-        } else if (select.startsWith("CVE-2021-22986")) {
-            // 这里创建你的cve漏洞检测，注意要实现 ExploitInterface 接口
-            ei = new CVE_2021_22986();
+    /**
+     * @title 使用默认浏览器打开
+     */
+    public static void browse2(String url) throws Exception {
+        Desktop desktop = Desktop.getDesktop();
+        if (Desktop.isDesktopSupported() && desktop.isSupported(Desktop.Action.BROWSE)) {
+            URI uri = new URI(url);
+            desktop.browse(uri);
         }
-
-        return (ExploitInterface) ei;
     }
-
 
     public static String str2Hex(String str) {
         char[] chars = "0123456789ABCDEF".toCharArray();

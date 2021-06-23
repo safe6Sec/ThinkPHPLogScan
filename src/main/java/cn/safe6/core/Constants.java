@@ -39,6 +39,24 @@ public interface Constants {
             "ISO-8859-1"
     };
 
+    String[] TP5PATH = {
+            "/runtime/log/"
+
+    };
+    String[] TP3PATH = {
+            "/Runtime/Logs/  ",
+                "/App/Runtime/Logs/",
+            " /Application/Runtime/Logs/Admin/",
+            "/Application/Runtime/Logs/Home/",
+            "/Application/Runtime/Logs/App/",
+            "/Application/Runtime/Logs/Ext/",
+            "/Application/Runtime/Logs/Api/",
+            "/Application/Runtime/Logs/Test/",
+            "/Application/Runtime/Logs/Common/",
+            "/Application/Runtime/Logs/Service/",
+            "/Application/Runtime/Logs/"
+    };
+
     // fofa 搜索数
     int[] SIZE = {10, 50, 100, 300, 600, 1000, 10000};
     // fofa配置保存位置

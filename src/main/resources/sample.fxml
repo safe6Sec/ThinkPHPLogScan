@@ -37,7 +37,7 @@
                         <Insets left="10.0" right="20.0" />
                      </HBox.margin>
                   </Text>
-                  <TextField fx:id="url" prefHeight="27.0" prefWidth="213.0" promptText="http://127.0.0.1">
+                  <TextField fx:id="target" prefHeight="27.0" prefWidth="213.0" promptText="http://127.0.0.1">
                      <HBox.margin>
                         <Insets right="20.0" />
                      </HBox.margin></TextField>
@@ -81,7 +81,7 @@
                   <Insets bottom="10.0" top="10.0" />
                </VBox.margin>
             </HBox>
-            <TabPane prefHeight="507.0" prefWidth="851.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane fx:id="tab" prefHeight="507.0" prefWidth="851.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="主页">
                   <content>
@@ -227,9 +227,9 @@
 <!--
                               <TextField fx:id="file_path" layoutX="204.0" layoutY="5.0" prefHeight="27.0" prefWidth="105.0" promptText="日期"/>
 -->
-                              <DatePicker fx:id="startTime" layoutX="195.0" layoutY="6.0" prefWidth="110.0" />
+                              <DatePicker fx:id="startTime" layoutX="195.0" layoutY="6.0" prefWidth="110.0" editable="false"/>
 
-                              <DatePicker fx:id="endTime" layoutX="390.0" layoutY="6.0" prefWidth="110.0" />
+                              <DatePicker fx:id="endTime" layoutX="390.0" layoutY="6.0" prefWidth="110.0" editable="false"/>
 
                               <Text fx:id="time" layoutX="617.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="用时    %s">
                                  <fill>
@@ -247,7 +247,7 @@
                               <TableView fx:id="table_view" layoutY="40.0" prefHeight="392.0" prefWidth="851.0">
                                 <columns>
                                   <TableColumn fx:id="id" prefWidth="57.0" text="序号" />
-                                  <TableColumn fx:id="target" prefWidth="681.0" text="日志文件" />
+                                  <TableColumn fx:id="url" prefWidth="681.0" text="日志文件" />
                                     <TableColumn fx:id="isVul" prefWidth="105.0" text="是否存在关键字" />
                                 </columns>
                               </TableView>

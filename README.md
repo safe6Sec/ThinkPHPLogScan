@@ -1,10 +1,52 @@
 ## ThinkPHPLogScan
-半成品还未完善
+支持tp3和tp5日志泄露文件扫描
+
+暂未完成，还有
+
+## 说明
+这算是Safe6武器库的第二个轮子。这个轮子之前用frame写的，由于比较简陋没放出来。最近心血来潮用javafx改造了一下就直接开源出来了。
+我打算后续轮子全部改用javafx进行开发。
+1. dirScan
+2. ThinkPHPLogScan
+
+造轮子真的很有趣，即能提升渗透效率，又能学习漏洞原理。
+
+## 扫描规则
+目前规则还不够全面，需要大家一起完善。
+
+现有日志路径如下：  
+```
+TP3
+/Runtime/Logs/  
+/App/Runtime/Logs/
+/Application/Runtime/Logs/Admin/
+/Application/Runtime/Logs/Home/
+/Application/Runtime/Logs/App/
+/Application/Runtime/Logs/Ext/
+/Application/Runtime/Logs/Api/
+/Application/Runtime/Logs/Test/
+/Application/Runtime/Logs/Common/
+/Application/Runtime/Logs/Service/
+/Application/Runtime/Logs/
+TP5
+/runtime/log/
+```
+现有日志格式如下：
+时间戳前缀的log，开发中
+```
+tp3
+19_01_01.log
+1550651608-19_02_20.log
+tp5
+/runtime/log/201808/07.log
+/runtime/log/201808/07_cli.log
+
+```
 
 
 
 ## 致谢
-剑仙大佬项目  
+剑仙大佬demo项目提供ui  
 https://github.com/yhy0/ExpDemo-JavaFX
 
 

@@ -21,7 +21,7 @@ public class Job implements Callable<String> {
     }
 
     // 根据cve选择对应的漏洞检测
-    public boolean checkAllExp() {
+/*    public boolean checkAllExp() {
         ExploitInterface ei = Tools.getExploit(cve);
 
         try {
@@ -34,7 +34,7 @@ public class Job implements Callable<String> {
             System.out.println(" checkAllExp  " + var4.toString());
         }
         return false;
-    }
+    }*/
 
 
 
@@ -42,11 +42,11 @@ public class Job implements Callable<String> {
     public String call() throws Exception {
         String isVul = "";
 //        System.out.println("线程:" + this.target + " -> 运行...");
-        if (this.checkAllExp()) {
+/*        if (this.checkAllExp()) {
             isVul = "存在";
         } else {
             isVul = "不存在";
-        }
+        }*/
 //        System.out.println("线程:" + this.target + " -> 结束.");
 
         return isVul;
