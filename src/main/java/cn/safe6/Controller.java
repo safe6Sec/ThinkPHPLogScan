@@ -44,6 +44,12 @@ public class Controller {
 
     @FXML
     public TextField keys;
+
+    @FXML
+    public DatePicker startTime;
+
+    @FXML
+    public DatePicker endTime;
     @FXML
     private Label tool_name;
     @FXML
