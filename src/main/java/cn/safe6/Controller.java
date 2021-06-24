@@ -75,7 +75,7 @@ public class Controller {
     @FXML
     private Text time;
     @FXML
-    private TextArea basic_info;
+    public  TextArea log;
     @FXML
     private TextArea fofa_result_info;
 
@@ -319,7 +319,7 @@ public class Controller {
                 if (file.exists()) {
                     String values = Tools.read(Constants.FOFAPATH, "UTF-8", false).toString();
                     values = values.substring(1, values.length() - 1);
-                    ;
+
 
                     System.out.println(values);
                     String[] EmaliKey = values.split(":");
@@ -335,7 +335,6 @@ public class Controller {
                         alert.setTitle("提示");
                         alert.setHeaderText(null);
                         alert.setContentText("fofa 配置错误\n");
-
                         alert.showAndWait();
                     }
                 }
@@ -446,9 +445,9 @@ public class Controller {
 
     // 基本信息
     public void basic() {
-        this.basic_info.setText(Constants.BASICINFO);
-        this.basic_info.setEditable(false);
-        this.basic_info.setWrapText(true);
+        this.log.setText(Constants.BASICINFO);
+        this.log.setEditable(false);
+        this.log.setWrapText(true);
 
     }
 
@@ -494,25 +493,22 @@ public class Controller {
             pool = Executors.newFixedThreadPool(Integer.parseInt(this.thread.getValue().toString()));
 
 
-
             try {
                 // 读取每行的目标
                 for (int i = 0; i < urls.size(); i++) {
-                    pool.submit(new UrlJob(urls.get(i), Constants.METHOD_GET,keys.getText()));
+                    //提交线程
+                    pool.submit(new UrlJob(urls.get(i), Constants.METHOD_GET, keys.getText(),log));
                 }
-
-
                 new Thread(
                         () -> {
-                            while (true){
+                            while (true) {
                                 long totalTime = System.currentTimeMillis() - startTime;       //总消耗时间 ,毫秒
-                                this.time.setText("用时 "+totalTime / 1000 +"s");
-                                if (pool.isTerminated()){
+                                this.time.setText("用时 " + totalTime / 1000 + "s");
+                                if (pool.isTerminated()) {
                                     this.scan.setText("开   始");
                                     break;
                                 }
                             }
-
                         }).start();
 
             } catch (Exception e) {
@@ -859,5 +855,6 @@ public class Controller {
             e.printStackTrace();
         }
     }
+
 
 }

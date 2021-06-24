@@ -18,7 +18,8 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 
 public class HttpTool {
-    private static int Timeout = 1000000;
+    //解决日志文件过大，超时
+    private static int Timeout = 9999999;
 
     private static String DefalutEncoding = "UTF-8";
 
