@@ -619,18 +619,18 @@ public class Controller {
         //此处直接转成字符串进行处理，也可以直接掉用方法取年月日
         String start = startTime.getValue().toString();
         String end = endTime.getValue().toString();
-        String[] sds = start.split("-");
-        String[] eds = end.split("-");
+        String[] startDate = start.split("-");
+        String[] endDate = end.split("-");
         //年
-        for (int i = Integer.parseInt(sds[0]); i <= Integer.parseInt(eds[0]); i++) {
+        for (int i = Integer.parseInt(startDate[0]); i <= Integer.parseInt(endDate[0]); i++) {
             //月
-            for (int j = 1; j <= 12; j++) {
+            for (int j = Integer.parseInt(startDate[1]); j <= 12; j++) {
                 //生成的年月大于结束日期年月直接跳出
-                if (Integer.parseInt(i + "" + j) > Integer.parseInt(eds[0] + eds[1])) {
+                if (Integer.parseInt(i + "" + j) > Integer.parseInt(endDate[0] + endDate[1])) {
                     break;
                 }
                 //日，所有月份全按照31天算
-                for (int k = 1; k <= 31; k++) {
+                for (int k = Integer.parseInt(startDate[2]); k <= 31; k++) {
                     //数字
                     String jj = j + "";
                     String kk = k + "";
@@ -641,8 +641,8 @@ public class Controller {
                         kk = "0" + k;
                     }
                     //生成的年月日大于结束日期年月日直接跳出
-                    System.out.println(i + "" + j + k);
-                    if (Integer.parseInt(i + "" + j + k) > Integer.parseInt(eds[0] + eds[1] + eds[2])) {
+                    //System.out.println(i + "" + j + k);
+                    if (Integer.parseInt(i + "" + jj + kk) > Integer.parseInt(endDate[0] + endDate[1] + endDate[2])) {
                         break;
                     }
                     if (Constants.VER[0].equals(tpVer.getValue().toString())) {

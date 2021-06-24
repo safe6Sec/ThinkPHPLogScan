@@ -77,24 +77,33 @@ public class UrlJob implements Callable<String> {
     @Override
     public String call() throws Exception {
 
-//        System.out.println("线程:" + this.target + " -> 运行...");
+        System.out.println("线程:" + this.url + " -> 运行...");
 
         String res=null;
         try {
             System.out.println(url);
             if (method.equals(Constants.METHOD_GET)) {
-                res = HttpTool.getHttpReuest(url, "application/x-www-form-urlencoded", "UTF-8");
+               int code = HttpTool.getCodeByHttpRequest(url,"UTF-8");
+                System.out.println("状态码："+code);
+                if (code==200){
+                   res = HttpTool.getHttpReuest(url, "application/x-www-form-urlencoded", "UTF-8");
+               }
             } else {
-                res = HttpTool.postHttpReuest(url, postData, "UTF-8", "application/x-www-form-urlencoded");
+                int code = HttpTool.getCodeByHttpRequest(url,"UTF-8");
+                System.out.println("状态码："+code);
+                if (code==200){
+                    res = HttpTool.postHttpReuest(url, postData, "UTF-8", "application/x-www-form-urlencoded");
+                }
             }
 
-            if (res != null) {
-                if (keys != null && !"".equals(keys.trim())) {
-                    if( res.contains(keys)){
+            if (res != null&&!"".equals(res)) {
+                System.out.println("响应包长度:"+res.length());
+                System.out.println("内容:"+res);
+
+                if (keys != null && !"".equals(keys.trim())&&res.contains(keys)) {
                         Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, "存在"));
-                    }
-                    Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, ""));
                 }
+                Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, ""));
             }
 
             //System.out.println("result ");
@@ -108,7 +117,7 @@ public class UrlJob implements Callable<String> {
             e.printStackTrace();
         }
 
-//        System.out.println("线程:" + this.target + " -> 结束.");
+        System.out.println("线程:" + this.url + " -> 结束.");
 
         return res;
     }

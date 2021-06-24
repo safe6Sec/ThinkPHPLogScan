@@ -18,7 +18,7 @@ import java.security.SecureRandom;
 import java.util.HashMap;
 
 public class HttpTool {
-    private static int Timeout = 10000;
+    private static int Timeout = 1000000;
 
     private static String DefalutEncoding = "UTF-8";
 
