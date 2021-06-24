@@ -259,8 +259,9 @@
                               <TableView fx:id="table_view" layoutY="40.0" prefHeight="392.0" prefWidth="851.0">
                                 <columns>
                                   <TableColumn fx:id="id" prefWidth="57.0" text="序号" />
-                                  <TableColumn fx:id="url" prefWidth="681.0" text="日志文件" />
-                                    <TableColumn fx:id="isVul" prefWidth="105.0" text="是否存在关键字" />
+                                  <TableColumn fx:id="url" prefWidth="578.0" text="日志文件" />
+                                   <TableColumn fx:id="length" prefWidth="105.0" text="长度" />
+                                    <TableColumn fx:id="isVul" prefWidth="105.0" text="关键字" />
                                 </columns>
                               </TableView>
                               <Text fx:id="time1" fill="#946464" layoutX="714.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="PS:  双击行浏览器打开" />

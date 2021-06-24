@@ -98,13 +98,14 @@ public class UrlJob implements Callable<String> {
             }
             System.out.println("线程:" + this.url + " -> 结束|\r\n 状态码："+code+"|\r\n响应包：\r\n");
             if (res != null&&!"".equals(res)) {
-               System.out.println(this.url+"响应包长度:"+res.length());
+                int length = res.length();
+               System.out.println(this.url+"响应包长度:"+length);
                // System.out.println(this.url+"内容:"+res);
 
                 if (keys != null && !"".equals(keys.trim())&&res.contains(keys)) {
-                        Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, "存在"));
+                        Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url,String.valueOf(length), "存在"));
                 }
-                Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, ""));
+                Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url,String.valueOf(length),""));
             }
 
             //System.out.println("result ");

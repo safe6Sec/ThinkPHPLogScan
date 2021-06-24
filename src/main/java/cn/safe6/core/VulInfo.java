@@ -13,10 +13,12 @@ public class VulInfo {
     private final SimpleStringProperty id = new SimpleStringProperty();
     private final SimpleStringProperty target = new SimpleStringProperty();
     private final SimpleStringProperty isVul = new SimpleStringProperty();
+    private final SimpleStringProperty length = new SimpleStringProperty();
 
-    public VulInfo(String id, String target, String isVul) {
+    public VulInfo(String id, String target,String length, String isVul) {
         setId(id);
         setTarget(target);
+        setLength(length);
         setIsVul(isVul);
     }
 
@@ -42,6 +44,14 @@ public class VulInfo {
 
     public void setIsVul(String isVul) {
         this.isVul.set(isVul);
+    }
+
+    public String getLength() {
+        return this.length.get();
+    }
+
+    public void setLength(String length) {
+        this.length.set(length);
     }
 
 }

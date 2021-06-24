@@ -58,6 +58,8 @@ public class Controller {
     public TabPane tab;
     @FXML
     public ToggleButton scan;
+
+
     @FXML
     private Label tool_name;
     @FXML
@@ -88,6 +90,8 @@ public class Controller {
     private TableColumn<VulInfo, String> url;
     @FXML
     private TableColumn<VulInfo, String> isVul;
+    @FXML
+    public TableColumn<VulInfo, String> length;
 
     public static final ObservableList<VulInfo> datas = FXCollections.observableArrayList();
 
@@ -556,6 +560,8 @@ public class Controller {
 
         this.url.setCellValueFactory(new PropertyValueFactory("target"));
         this.url.setSortable(false);
+
+        this.length.setCellValueFactory(new PropertyValueFactory("length"));
 
         this.isVul.setCellValueFactory(new PropertyValueFactory("isVul"));
 
