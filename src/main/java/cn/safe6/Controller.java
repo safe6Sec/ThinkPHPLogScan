@@ -67,10 +67,6 @@ public class Controller {
     @FXML
     private ChoiceBox tpVer;
     @FXML
-    private ChoiceBox encoding;
-    @FXML
-    private ChoiceBox platform;
-    @FXML
     private ChoiceBox thread;
     @FXML
     private ChoiceBox fofa_size;
@@ -94,6 +90,9 @@ public class Controller {
     private TableColumn<VulInfo, String> isVul;
 
     public static final ObservableList<VulInfo> datas = FXCollections.observableArrayList();
+
+    ExecutorService pool = null;
+
     @FXML
     private TextField target;
 
@@ -455,8 +454,6 @@ public class Controller {
         LocalDate d1 = this.startTime.getValue();
         LocalDate d2 = this.endTime.getValue();
         long startTime = System.currentTimeMillis(); //程序开始记录时间
-        ExecutorService pool = null;
-
 
         if (this.scan.isSelected()) {
             if (!Tools.checkTheURL(url)) {
@@ -487,22 +484,32 @@ public class Controller {
                 return;
             }
 
-            this.initTableView();
-
             //通过字典合成url
             List<String> urls = this.getUrls(this.genLogDict());
             // 获取用户选择的线程池数量， 创建对应容量的线程池。
             pool = Executors.newFixedThreadPool(Integer.parseInt(this.thread.getValue().toString()));
 
+
+
             try {
                 // 读取每行的目标
                 for (int i = 0; i < urls.size(); i++) {
                     pool.submit(new UrlJob(urls.get(i), Constants.METHOD_GET,keys.getText()));
-/*                    String res = f.get().toString();
-                    if (res != null){
-                        this.datas.add(new VulInfo(String.valueOf(i), url, "存在"));
-                    }*/
                 }
+
+
+                new Thread(
+                        () -> {
+                            while (true){
+                                long totalTime = System.currentTimeMillis() - startTime;       //总消耗时间 ,毫秒
+                                this.time.setText("用时 "+totalTime / 1000 +"s");
+                                if (pool.isTerminated()){
+                                    this.scan.setText("开   始");
+                                    break;
+                                }
+                            }
+
+                        }).start();
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -519,9 +526,6 @@ public class Controller {
                     e.printStackTrace();
                 }
             }
-            long endTime = System.currentTimeMillis(); //程序结束记录时间
-            long totalTime = endTime - startTime;       //总消耗时间 ,毫秒
-            this.time.setText((String.format("用时 %s s", (double) totalTime / 1000)));
         }
 
 
@@ -844,6 +848,7 @@ public class Controller {
             this.initToolbar();
             this.defaultInformation();
             this.basic();
+            this.initTableView();
         } catch (Exception e) {
             e.printStackTrace();
         }

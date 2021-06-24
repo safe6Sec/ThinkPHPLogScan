@@ -77,28 +77,29 @@ public class UrlJob implements Callable<String> {
     @Override
     public String call() throws Exception {
 
-        System.out.println("线程:" + this.url + " -> 运行...");
+        //System.out.println("线程:" + this.url + " -> 运行...");
 
         String res=null;
+        int code = 0;
         try {
             System.out.println(url);
             if (method.equals(Constants.METHOD_GET)) {
-               int code = HttpTool.getCodeByHttpRequest(url,"UTF-8");
-                System.out.println("状态码："+code);
+                code = HttpTool.getCodeByHttpRequest(url,"UTF-8");
+               // System.out.println("状态码："+code);
                 if (code==200){
                    res = HttpTool.getHttpReuest(url, "application/x-www-form-urlencoded", "UTF-8");
                }
             } else {
-                int code = HttpTool.getCodeByHttpRequest(url,"UTF-8");
-                System.out.println("状态码："+code);
+                 code = HttpTool.getCodeByHttpRequest(url,"UTF-8");
+                //System.out.println("状态码："+code);
                 if (code==200){
                     res = HttpTool.postHttpReuest(url, postData, "UTF-8", "application/x-www-form-urlencoded");
                 }
             }
-
+            System.out.println("线程:" + this.url + " -> 结束|\r\n 状态码："+code+"|\r\n响应包：\r\n");
             if (res != null&&!"".equals(res)) {
-                System.out.println("响应包长度:"+res.length());
-                System.out.println("内容:"+res);
+               System.out.println(this.url+"响应包长度:"+res.length());
+               // System.out.println(this.url+"内容:"+res);
 
                 if (keys != null && !"".equals(keys.trim())&&res.contains(keys)) {
                         Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, "存在"));
@@ -115,10 +116,9 @@ public class UrlJob implements Callable<String> {
         } catch (Exception e) {
             System.out.println(e);
             e.printStackTrace();
+            return "0";
         }
-
-        System.out.println("线程:" + this.url + " -> 结束.");
-
-        return res;
+        //System.out.println(11111);
+        return "1";
     }
 }

@@ -243,7 +243,7 @@
 
                               <DatePicker fx:id="endTime" editable="false" layoutX="390.0" layoutY="6.0" prefWidth="110.0" />
 
-                              <Text fx:id="time" layoutX="617.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="用时    %s">
+                              <Text fx:id="time" layoutX="617.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="用时 0s">
                                  <fill>
                                     <LinearGradient endX="1.0" endY="1.0">
                                        <stops>
