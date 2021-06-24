@@ -405,8 +405,8 @@ public class Controller {
             this.encoding.getItems().add(coding);
         }*/
 
-        this.thread.setValue(32);
-        for (int i = 8; i <= 64; i += 4) {
+        this.thread.setValue(8);
+        for (int i = 4; i <= 36; i += 4) {
             this.thread.getItems().add(i);
         }
 

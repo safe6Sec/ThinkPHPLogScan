@@ -91,6 +91,7 @@ public class UrlJob implements Callable<String> {
             Platform.runLater(() -> {
                 this.log.appendText("开始请求:"+url);
                 this.log.appendText("\r\n");
+                this.log.appendText("\r\n");
             });
             if (method.equals(Constants.METHOD_GET)) {
                 code = HttpTool.getCodeByHttpRequest(url, "UTF-8");
@@ -106,14 +107,16 @@ public class UrlJob implements Callable<String> {
                 }
             }
             this.log.appendText("线程:" + this.url + " -> 结束|状态码：" + code + "\r\n");
+            this.log.appendText("\r\n");
            // System.out.println("线程:" + this.url + " -> 结束|\r\n 状态码：" + code + "|\r\n响应包：\r\n");
             if (res != null && !"".equals(res)) {
                 int length = res.length();
                 //System.out.println(this.url + "响应包长度:" + length);
-                Platform.runLater(() -> {
+/*                Platform.runLater(() -> {
                     this.log.appendText(this.url + "响应包长度:" + length);
                     this.log.appendText("\r\n");
-                });
+                    this.log.appendText("\r\n");
+                });*/
 
                 // System.out.println(this.url+"内容:"+res);
 
@@ -131,8 +134,9 @@ public class UrlJob implements Callable<String> {
 
 
         } catch (Exception e) {
-            System.out.println(e);
-            e.printStackTrace();
+            System.out.println(e.getMessage());
+            this.log.appendText("线程:" + this.url + "错误:" + e.getMessage() + "\r\n");
+            //e.printStackTrace();
             return "0";
         }
         //System.out.println(11111);
