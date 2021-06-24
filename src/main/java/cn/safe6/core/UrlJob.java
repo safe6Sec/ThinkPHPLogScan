@@ -89,11 +89,12 @@ public class UrlJob implements Callable<String> {
             }
 
             if (res != null) {
-                if (keys != null && !"".equals(keys.trim()) && res.contains(keys)) {
-                    Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, "存在"));
+                if (keys != null && !"".equals(keys.trim())) {
+                    if( res.contains(keys)){
+                        Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, "存在"));
+                    }
+                    Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, ""));
                 }
-                Controller.datas.add(new VulInfo(String.valueOf(Controller.datas.size() + 1), url, ""));
-
             }
 
             //System.out.println("result ");

@@ -14,8 +14,12 @@
 
 
 ## 使用
-由于是javafx开发的，高版本java已经不带javafx的东西。需要自己下。
+由于是javafx开发的，高版本java已经不带javafx的东西。需要自己下。   
 低版本可以直接点击运行，如java8
+
+## 编译
+mvn jfx:jar 即可生成 jar文件  
+输出目录target/jfx/app/
 
 ## 扫描规则
 目前规则还不够全面，需要大家一起完善。
